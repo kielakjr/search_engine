@@ -3,6 +3,7 @@ package com.kielakjr.search_engine.auth;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,13 +18,16 @@ import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+import java.util.List;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 @Entity
 @Table(name = "users")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -37,4 +41,14 @@ public class User {
 
   @CreationTimestamp
   private LocalDate createdAt;
+
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  @Override
+  public List<SimpleGrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+  }
 }

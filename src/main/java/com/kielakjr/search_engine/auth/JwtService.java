@@ -32,6 +32,15 @@ public class JwtService {
                .compact();
   }
 
+  public boolean validateToken(String token) {
+    try {
+      Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
+      return !isTokenExpired(token);
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   public boolean isTokenValid(String token, User user) {
     String email = extractEmail(token);
     return email.equals(user.getEmail()) && !isTokenExpired(token);
