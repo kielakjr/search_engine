@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtTokenProvider;
 
   public UserResponse register(UserRequest request) {
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -31,7 +32,7 @@ public class AuthService {
         .build();
   }
 
-  public UserResponse login(UserRequest request) {
+  public AuthTokenResponse login(UserRequest request) {
     User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
@@ -39,10 +40,13 @@ public class AuthService {
       throw new IllegalArgumentException("Invalid email or password");
     }
 
-    return UserResponse.builder()
-        .id(user.getId())
-        .username(user.getEmail())
-        .role(user.getRole())
+    return AuthTokenResponse.builder()
+        .token(jwtTokenProvider.generateToken(user))
+        .user(UserResponse.builder()
+            .id(user.getId())
+            .username(user.getEmail())
+            .role(user.getRole())
+            .build())
         .build();
   }
 }
