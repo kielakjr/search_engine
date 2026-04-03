@@ -1,0 +1,78 @@
+package com.kielakjr.search_engine.crawler;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Map;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Service;
+
+import com.kielakjr.search_engine.config.CrawlerProperties;
+import com.kielakjr.search_engine.source.SourceRepository;
+import com.kielakjr.search_engine.source.Source;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class CrawlerService {
+  private final CrawlJobRepository crawlJobRepository;
+  private final SourceRepository sourceRepository;
+  private final CrawlerProperties crawlerProperties;
+
+  public void startCrawl(Source source) {
+    CrawlJob crawlJob = CrawlJob.builder()
+      .source(source)
+      .status(CrawlStatus.PENDING)
+      .build();
+    crawlJobRepository.save(crawlJob);
+    crawlJob.setStatus(CrawlStatus.RUNNING);
+    crawlJobRepository.save(crawlJob);
+    crawl(source.getUrl());
+    crawlJob.setStatus(CrawlStatus.COMPLETED);
+    crawlJobRepository.save(crawlJob);
+  }
+
+private void crawl(String seedUrl) {
+  Queue<String> queue = new LinkedList<>();
+  Set<String> visited = new HashSet<>();
+  Map<String, Integer> depthMap = new HashMap<>();
+
+  queue.add(seedUrl);
+  visited.add(seedUrl);
+  depthMap.put(seedUrl, 0);
+
+  while (!queue.isEmpty()) {
+    String url = queue.poll();
+    int depth = depthMap.get(url);
+
+    if (depth > crawlerProperties.getMaxDepth()) continue;
+    if (visited.size() > crawlerProperties.getMaxPages()) break;
+
+    try {
+      Document doc = Jsoup.connect(url).timeout(5000).get();
+      String title = doc.title();
+      String body = doc.body().text();
+      System.out.println("Crawled: " + title);
+
+      Elements links = doc.select("a[href]");
+      for (Element link : links) {
+        String linkUrl = link.absUrl("href");
+        if (!visited.contains(linkUrl) && linkUrl.startsWith(seedUrl)) {
+          queue.add(linkUrl);
+          visited.add(linkUrl);
+          depthMap.put(linkUrl, depth + 1);
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("Failed to crawl: " + url);
+    }
+  }
+}
+}

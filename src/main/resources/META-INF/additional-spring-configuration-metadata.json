@@ -8,5 +8,15 @@
     "name": "app.jwt.expiration-ms",
     "type": "java.lang.Long",
     "description": "JWT token expiration time in milliseconds"
+  },
+  {
+    "name": "app.crawler.max-depth",
+    "type": "java.lang.Integer",
+    "description": "Maximum depth for crawling"
+  },
+  {
+    "name": "app.crawler.max-pages",
+    "type": "java.lang.Integer",
+    "description": "Maximum number of pages to crawl"
   }
 ]}
