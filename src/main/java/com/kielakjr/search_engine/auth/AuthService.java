@@ -27,7 +27,7 @@ public class AuthService {
 
     return UserResponse.builder()
         .id(savedUser.getId())
-        .username(savedUser.getEmail())
+        .email(savedUser.getEmail())
         .role(savedUser.getRole())
         .build();
   }
@@ -44,7 +44,7 @@ public class AuthService {
         .token(jwtTokenProvider.generateToken(user))
         .user(UserResponse.builder()
             .id(user.getId())
-            .username(user.getEmail())
+            .email(user.getEmail())
             .role(user.getRole())
             .build())
         .build();
