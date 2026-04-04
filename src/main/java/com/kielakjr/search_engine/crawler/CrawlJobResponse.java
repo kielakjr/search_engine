@@ -1,6 +1,6 @@
 package com.kielakjr.search_engine.crawler;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +16,5 @@ public class CrawlJobResponse {
   private String sourceUrl;
   private CrawlStatus status;
   private int pagesFound;
-  private LocalDate createdAt;
+  private LocalDateTime createdAt;
 }

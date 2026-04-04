@@ -27,7 +27,7 @@ public class SourceController {
 
   @PostMapping
   public ResponseEntity<SourceResponse> createSource(@Valid @RequestBody SourceRequest source) {
-    return ResponseEntity.ok(sourceService.createSource(source));
+    return ResponseEntity.created(null).body(sourceService.createSource(source));
   }
 
   @DeleteMapping("/{id}")

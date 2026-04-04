@@ -14,7 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.kielakjr.search_engine.source.Source;
 
 @Entity
@@ -33,5 +34,5 @@ public class CrawlJob {
   private CrawlStatus status;
   private int pagesFound;
   @CreationTimestamp
-  private LocalDate createdAt;
+  private LocalDateTime createdAt;
 }
