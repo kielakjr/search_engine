@@ -28,6 +28,8 @@ public class SecurityConfig {
           .requestMatchers(HttpMethod.POST, "/api/sources").hasRole("ADMIN")
           .requestMatchers(HttpMethod.DELETE, "/api/sources/**").hasRole("ADMIN")
           .requestMatchers(HttpMethod.POST, "/api/crawler/**").hasRole("ADMIN")
+          .requestMatchers(HttpMethod.GET, "/search/history/{userId}").hasRole("ADMIN")
+          .requestMatchers(HttpMethod.GET, "/search/history").authenticated()
           .requestMatchers(HttpMethod.GET, "/search").permitAll()
           .anyRequest().authenticated())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

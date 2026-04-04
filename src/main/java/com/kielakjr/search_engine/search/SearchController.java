@@ -25,6 +25,11 @@ public class SearchController {
     return ResponseEntity.ok(searchService.search(query, page, size, domain));
   }
 
+  @GetMapping("/history")
+  public ResponseEntity<List<SearchHistoryResponse>> getSearchHistoryForCurrentUser() {
+    return ResponseEntity.ok(searchHistoryService.getSearchHistoryForCurrentUser());
+  }
+
   @GetMapping("/history/{userId}")
   public ResponseEntity<List<SearchHistoryResponse>> getSearchHistory(@PathVariable Long userId) {
     return ResponseEntity.ok(searchHistoryService.getSearchHistoryForUser(userId));
