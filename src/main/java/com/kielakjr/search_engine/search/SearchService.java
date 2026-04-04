@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class SearchService {
   private final ElasticsearchOperations elasticsearchOperations;
 
-  public List<SearchResponse> search(String query) {
+  public List<SearchResponse> search(String query, int page, int size) {
     Query searchQuery = NativeQuery.builder()
       .withQuery(q -> q
         .multiMatch(m -> m
@@ -29,7 +29,7 @@ public class SearchService {
         )
       )
       .withHighlightQuery(new HighlightQuery(new Highlight(List.of(new HighlightField("content"))), PageDocument.class))
-      .withPageable(PageRequest.of(0, 10))
+      .withPageable(PageRequest.of(page, size))
       .build();
 
     List<SearchHit<PageDocument>> searchHits = elasticsearchOperations.search(searchQuery, PageDocument.class).getSearchHits();

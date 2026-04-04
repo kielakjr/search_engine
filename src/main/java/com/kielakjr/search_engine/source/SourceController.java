@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,17 +21,18 @@ public class SourceController {
   private final SourceService sourceService;
 
   @GetMapping
-  public List<SourceResponse> getAllSources() {
-    return sourceService.getAllSources();
+  public ResponseEntity<List<SourceResponse>> getAllSources() {
+    return ResponseEntity.ok(sourceService.getAllSources());
   }
 
   @PostMapping
-  public SourceResponse createSource(@Valid @RequestBody SourceRequest source) {
-    return sourceService.createSource(source);
+  public ResponseEntity<SourceResponse> createSource(@Valid @RequestBody SourceRequest source) {
+    return ResponseEntity.ok(sourceService.createSource(source));
   }
 
   @DeleteMapping("/{id}")
-  public void deleteSource(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteSource(@PathVariable Long id) {
     sourceService.deleteSource(id);
+    return ResponseEntity.noContent().build();
   }
 }

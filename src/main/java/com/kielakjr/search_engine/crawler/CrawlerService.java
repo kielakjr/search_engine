@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.HttpStatusException;
 import org.springframework.stereotype.Service;
 
 import com.kielakjr.search_engine.config.CrawlerProperties;
@@ -20,9 +21,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CrawlerService {
   private final PageRepository pageRepository;
   private final CrawlJobRepository crawlJobRepository;
@@ -42,6 +45,7 @@ public class CrawlerService {
       crawlJob.setStatus(CrawlStatus.COMPLETED);
     } catch (Exception e) {
       crawlJob.setStatus(CrawlStatus.FAILED);
+      log.error("Crawl failed for source: " + source.getUrl(), e);
     } finally {
       crawlJobRepository.save(crawlJob);
     }
@@ -69,7 +73,13 @@ public class CrawlerService {
           .timeout(5000)
           .get();
         String title = doc.title();
-        String body = doc.body().text();
+        String body = doc.select("p, h1, h2, h3").text();
+        if (body.isEmpty()) {
+          body = doc.body().text();
+        }
+        if (body.length() > 5000) {
+          body = body.substring(0, 5000);
+        }
         pagesFound++;
         PageDocument pageDoc = PageDocument.builder()
           .url(url)
@@ -101,8 +111,10 @@ public class CrawlerService {
             depthMap.put(linkUrl, depth + 1);
           }
         }
+      } catch (HttpStatusException e) {
+
       } catch (Exception e) {
-        
+        log.error("Failed to crawl: " + url + " | " + e.getMessage(), e);
       }
     }
     return pagesFound;
