@@ -26,6 +26,7 @@ public class SearchService {
         .multiMatch(m -> m
           .query(query)
           .fields("title^3", "content")
+          .fuzziness("1")
         )
       )
       .withHighlightQuery(new HighlightQuery(new Highlight(List.of(new HighlightField("content"))), PageDocument.class))

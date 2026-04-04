@@ -18,5 +18,15 @@
     "name": "app.crawler.max-pages",
     "type": "java.lang.Integer",
     "description": "Maximum number of pages to crawl"
+  },
+  {
+    "name": "app.crawler.crawl-interval-ms",
+    "type": "java.lang.Long",
+    "description": "Interval between crawl attempts in milliseconds"
+  },
+  {
+    "name": "app.crawler.initial-delay-ms",
+    "type": "java.lang.Long",
+    "description": "Initial delay before starting the first crawl attempt in milliseconds"
   }
 ]}
