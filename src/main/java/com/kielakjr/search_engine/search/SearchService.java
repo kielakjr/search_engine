@@ -20,14 +20,27 @@ import lombok.RequiredArgsConstructor;
 public class SearchService {
   private final ElasticsearchOperations elasticsearchOperations;
 
-  public List<SearchResponse> search(String query, int page, int size) {
+  public List<SearchResponse> search(String query, int page, int size, String domain) {
     Query searchQuery = NativeQuery.builder()
       .withQuery(q -> q
-        .multiMatch(m -> m
-          .query(query)
-          .fields("title^3", "content")
-          .fuzziness("1")
-        )
+        .bool(b -> {
+          b.must(must -> must
+            .multiMatch(m -> m
+              .query(query)
+              .fields("title^3", "content")
+              .fuzziness("1")
+            )
+          );
+          if (domain != null && !domain.isEmpty()) {
+            b.filter(f -> f
+              .term(t -> t
+                .field("domain")
+                .value(domain)
+              )
+            );
+          }
+          return b;
+        })
       )
       .withHighlightQuery(new HighlightQuery(new Highlight(List.of(new HighlightField("content"))), PageDocument.class))
       .withPageable(PageRequest.of(page, size))

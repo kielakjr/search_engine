@@ -16,7 +16,10 @@ public class SearchController {
   private final SearchService searchService;
 
   @GetMapping
-  public ResponseEntity<List<SearchResponse>> search(@RequestParam String query,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-    return ResponseEntity.ok(searchService.search(query, page, size));
+  public ResponseEntity<List<SearchResponse>> search(
+    @RequestParam String query,@RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size,
+    @RequestParam(required = false) String domain) {
+    return ResponseEntity.ok(searchService.search(query, page, size, domain));
   }
 }
