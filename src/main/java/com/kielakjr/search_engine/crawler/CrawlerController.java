@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import lombok.RequiredArgsConstructor;
 import com.kielakjr.search_engine.source.SourceRepository;
 import com.kielakjr.search_engine.source.Source;
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/crawler")
@@ -22,5 +24,11 @@ public class CrawlerController {
             .orElseThrow(() -> new RuntimeException("Source not found"));
         crawlerService.startCrawl(source);
         return ResponseEntity.accepted().body("Crawl started for source: " + source.getUrl());
+    }
+
+    @GetMapping("/jobs")
+    public ResponseEntity<List<CrawlJobResponse>> getAllJobs() {
+        List<CrawlJobResponse> jobs = crawlerService.getAllJobs();
+        return ResponseEntity.ok(jobs);
     }
 }

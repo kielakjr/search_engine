@@ -4,6 +4,7 @@ import com.kielakjr.search_engine.search.PageRepository;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.kielakjr.search_engine.source.Source;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,4 +134,21 @@ public class CrawlerService {
         return false;
     }
   }
+
+  public List<CrawlJobResponse> getAllJobs() {
+    return crawlJobRepository.findAllByOrderByCreatedAtDesc().stream()
+      .map(this::toResponse)
+      .collect(Collectors.toList());
+  }
+
+  private CrawlJobResponse toResponse(CrawlJob job) {
+    return CrawlJobResponse.builder()
+      .id(job.getId())
+      .sourceUrl(job.getSource().getUrl())
+      .status(job.getStatus())
+      .pagesFound(job.getPagesFound())
+      .createdAt(job.getCreatedAt())
+      .build();
+  }
 }
+

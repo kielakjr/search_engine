@@ -3,6 +3,8 @@ package com.kielakjr.search_engine.crawler;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,6 +29,7 @@ public class CrawlJob {
   private Long id;
   @ManyToOne
   private Source source;
+  @Enumerated(EnumType.STRING)
   private CrawlStatus status;
   private int pagesFound;
   @CreationTimestamp
