@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SearchController {
   private final SearchService searchService;
+  private final SearchHistoryService searchHistoryService;
 
   @GetMapping
   public ResponseEntity<List<SearchResponse>> search(
@@ -21,5 +23,10 @@ public class SearchController {
     @RequestParam(defaultValue = "10") int size,
     @RequestParam(required = false) String domain) {
     return ResponseEntity.ok(searchService.search(query, page, size, domain));
+  }
+
+  @GetMapping("/history/{userId}")
+  public ResponseEntity<List<SearchHistoryResponse>> getSearchHistory(@PathVariable Long userId) {
+    return ResponseEntity.ok(searchHistoryService.getSearchHistoryForUser(userId));
   }
 }
