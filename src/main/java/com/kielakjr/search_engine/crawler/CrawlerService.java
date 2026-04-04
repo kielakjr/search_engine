@@ -11,6 +11,7 @@ import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.HttpStatusException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.kielakjr.search_engine.config.CrawlerProperties;
@@ -31,7 +32,9 @@ public class CrawlerService {
   private final CrawlJobRepository crawlJobRepository;
   private final CrawlerProperties crawlerProperties;
 
+  @Async("crawlerTaskExecutor")
   public void startCrawl(Source source) {
+    log.info("Starting crawl for source: " + source.getUrl());
     CrawlJob crawlJob = CrawlJob.builder()
       .source(source)
       .status(CrawlStatus.PENDING)
@@ -66,7 +69,7 @@ public class CrawlerService {
       int depth = depthMap.get(url);
 
       if (depth > crawlerProperties.getMaxDepth()) continue;
-      if (pagesFound > crawlerProperties.getMaxPages()) break;
+      if (pagesFound >= crawlerProperties.getMaxPages()) break;
 
       try {
         Document doc = Jsoup.connect(url)

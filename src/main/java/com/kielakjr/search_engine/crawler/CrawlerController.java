@@ -17,10 +17,10 @@ public class CrawlerController {
     private final SourceRepository sourceRepository;
 
     @PostMapping("/start/{sourceId}")
-    public ResponseEntity<Void> startCrawl(@PathVariable Long sourceId) {
+    public ResponseEntity<String> startCrawl(@PathVariable Long sourceId) {
         Source source = sourceRepository.findById(sourceId)
             .orElseThrow(() -> new RuntimeException("Source not found"));
         crawlerService.startCrawl(source);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.accepted().body("Crawl started for source: " + source.getUrl());
     }
 }
