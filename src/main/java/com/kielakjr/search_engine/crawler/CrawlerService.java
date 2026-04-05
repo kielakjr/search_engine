@@ -9,7 +9,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Map;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.HttpStatusException;
 import org.springframework.scheduling.annotation.Async;
@@ -33,6 +32,7 @@ public class CrawlerService {
   private final PageRepository pageRepository;
   private final CrawlJobRepository crawlJobRepository;
   private final CrawlerProperties crawlerProperties;
+  private final JsoupFetcher jsoupFetcher;
 
   @Async("crawlerTaskExecutor")
   public void startCrawl(Source source) {
@@ -74,9 +74,7 @@ public class CrawlerService {
       if (pagesFound >= crawlerProperties.getMaxPages()) break;
 
       try {
-        Document doc = Jsoup.connect(url)
-          .timeout(5000)
-          .get();
+        Document doc = jsoupFetcher.fetch(url);
         String title = doc.title();
         String body = doc.select("p, h1, h2, h3").text();
         if (body.isEmpty()) {
