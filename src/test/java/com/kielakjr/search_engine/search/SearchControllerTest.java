@@ -22,6 +22,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.kielakjr.search_engine.auth.JwtService;
+import com.kielakjr.search_engine.auth.UserRepository;
+
 @WebMvcTest(SearchController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class SearchControllerTest {
@@ -36,10 +39,10 @@ public class SearchControllerTest {
   private SearchHistoryService searchHistoryService;
 
   @MockitoBean
-  private com.kielakjr.search_engine.auth.JwtService jwtService;
+  private JwtService jwtService;
 
   @MockitoBean
-  private com.kielakjr.search_engine.auth.UserRepository userRepository;
+  private UserRepository userRepository;
 
   private SearchResponse searchResponse;
   private SearchHistoryResponse searchHistoryResponse;
