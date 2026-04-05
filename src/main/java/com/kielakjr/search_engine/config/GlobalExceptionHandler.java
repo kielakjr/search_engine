@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException e) {
     Map<String, String> error = new HashMap<>();
     error.put("error", "Invalid argument: " + e.getMessage());
+    return ResponseEntity.badRequest().body(error);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<Map<String, String>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", "Request body is missing or malformed");
     return ResponseEntity.badRequest().body(error);
   }
 
