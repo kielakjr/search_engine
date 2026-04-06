@@ -79,11 +79,11 @@ public class CrawlerControllerTest {
     }
 
     @Test
-    void startCrawlReturns500WhenSourceNotFound() throws Exception {
+    void startCrawlReturns404WhenSourceNotFound() throws Exception {
       when(sourceRepository.findById(anyLong())).thenReturn(Optional.empty());
 
       mockMvc.perform(post("/api/crawler/start/99"))
-          .andExpect(status().isInternalServerError());
+          .andExpect(status().isNotFound());
     }
 
     @Test
