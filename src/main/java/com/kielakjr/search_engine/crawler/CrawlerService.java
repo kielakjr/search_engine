@@ -2,15 +2,15 @@ package com.kielakjr.search_engine.crawler;
 
 import com.kielakjr.search_engine.search.PageRepository;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.Map;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.HttpStatusException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,7 @@ public class CrawlerService {
   private final CrawlJobRepository crawlJobRepository;
   private final CrawlerProperties crawlerProperties;
   private final JsoupFetcher jsoupFetcher;
+  private final RedisTemplate<String, String> redisTemplate;
 
   @Async("crawlerTaskExecutor")
   public void startCrawl(Source source) {
@@ -58,12 +59,12 @@ public class CrawlerService {
 
   private int crawl(String seedUrl) {
     Queue<String> queue = new LinkedList<>();
-    Set<String> visited = new HashSet<>();
     Map<String, Integer> depthMap = new HashMap<>();
+    String redisKey = "crawled:" + seedUrl;
     int pagesFound = 0;
 
     queue.add(seedUrl);
-    visited.add(seedUrl);
+    redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
     depthMap.put(seedUrl, 0);
 
     while (!queue.isEmpty()) {
@@ -108,9 +109,10 @@ public class CrawlerService {
 
           if (linkUrl.isEmpty()) continue;
 
-          if (!visited.contains(linkUrl) && isSameDomain(linkUrl, seedUrl)) {
+          Boolean isMember = redisTemplate.opsForSet().isMember(redisKey, linkUrl);
+          if (Boolean.FALSE.equals(isMember) && isSameDomain(linkUrl, seedUrl)) {
             queue.add(linkUrl);
-            visited.add(linkUrl);
+            redisTemplate.opsForSet().add(redisKey, linkUrl);
             depthMap.put(linkUrl, depth + 1);
           }
         }
