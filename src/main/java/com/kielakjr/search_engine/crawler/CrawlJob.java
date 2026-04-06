@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.FetchType;
 import java.time.LocalDateTime;
 
 import com.kielakjr.search_engine.source.Source;
@@ -28,7 +29,7 @@ public class CrawlJob {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Source source;
   @Enumerated(EnumType.STRING)
   private CrawlStatus status;

@@ -2,11 +2,13 @@ package com.kielakjr.search_engine.crawler;
 
 import com.kielakjr.search_engine.search.PageRepository;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.Map;
+import java.util.Set;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.HttpStatusException;
@@ -67,6 +69,8 @@ public class CrawlerService {
     redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
     depthMap.put(seedUrl, 0);
 
+    Set<String> disallowedPaths = getDisallowedPaths(seedUrl);
+
     while (!queue.isEmpty()) {
       String url = queue.poll();
       int depth = depthMap.get(url);
@@ -109,6 +113,8 @@ public class CrawlerService {
 
           if (linkUrl.isEmpty()) continue;
 
+          if (disallowedPaths.contains(linkUrl)) continue;
+
           Boolean isMember = redisTemplate.opsForSet().isMember(redisKey, linkUrl);
           if (Boolean.FALSE.equals(isMember) && isSameDomain(linkUrl, seedUrl)) {
             queue.add(linkUrl);
@@ -149,6 +155,22 @@ public class CrawlerService {
       .pagesFound(job.getPagesFound())
       .createdAt(job.getCreatedAt())
       .build();
+  }
+
+  private Set<String> getDisallowedPaths(String seedUrl) {
+    try {
+      String robotsUrl = seedUrl + "/robots.txt";
+      Document doc = jsoupFetcher.fetch(robotsUrl);
+      Set<String> disallowed = new HashSet<>();
+      for (String line : doc.text().split("\n")) {
+        if (line.startsWith("Disallow:")) {
+          disallowed.add(line.replace("Disallow:", "").trim());
+        }
+      }
+      return disallowed;
+    } catch (Exception e) {
+      return new HashSet<>();
+    }
   }
 }
 
