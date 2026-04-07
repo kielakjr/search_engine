@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -19,8 +22,9 @@ public class SearchController {
 
   @GetMapping
   public ResponseEntity<List<SearchResponse>> search(
-    @RequestParam String query,@RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size,
+    @RequestParam @NotBlank String query,
+    @RequestParam(defaultValue = "0") @Min(0) int page,
+    @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
     @RequestParam(required = false) String domain) {
     return ResponseEntity.ok(searchService.search(query, page, size, domain));
   }

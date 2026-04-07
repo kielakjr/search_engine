@@ -23,6 +23,9 @@ import com.kielakjr.search_engine.source.Source;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.stream.Collectors;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +102,7 @@ public class CrawlerService {
         }
         pagesFound++;
         PageDocument pageDoc = PageDocument.builder()
+          .id(hashUrl(url))
           .url(url)
           .title(title)
           .content(body)
@@ -164,6 +168,16 @@ public class CrawlerService {
       .pagesFound(job.getPagesFound())
       .createdAt(job.getCreatedAt())
       .build();
+  }
+
+  private String hashUrl(String url) {
+    try {
+      byte[] hash = MessageDigest.getInstance("SHA-256")
+          .digest(url.getBytes(StandardCharsets.UTF_8));
+      return HexFormat.of().formatHex(hash);
+    } catch (Exception e) {
+      return String.valueOf(url.hashCode());
+    }
   }
 
   private boolean isDisallowed(String url, Set<String> disallowedPaths) {
