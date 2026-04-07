@@ -113,7 +113,7 @@ public class CrawlerService {
 
           if (linkUrl.isEmpty()) continue;
 
-          if (disallowedPaths.contains(linkUrl)) continue;
+          if (isDisallowed(linkUrl, disallowedPaths)) continue;
 
           Boolean isMember = redisTemplate.opsForSet().isMember(redisKey, linkUrl);
           if (Boolean.FALSE.equals(isMember) && isSameDomain(linkUrl, seedUrl)) {
@@ -157,14 +157,33 @@ public class CrawlerService {
       .build();
   }
 
+  private boolean isDisallowed(String url, Set<String> disallowedPaths) {
+    try {
+      String path = new java.net.URI(url).getPath();
+      if (path == null) return false;
+      return disallowedPaths.stream().anyMatch(path::startsWith);
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   private Set<String> getDisallowedPaths(String seedUrl) {
     try {
       String robotsUrl = seedUrl + "/robots.txt";
       Document doc = jsoupFetcher.fetch(robotsUrl);
+      String text = doc.body().wholeText();
+
+      boolean relevantAgent = false;
       Set<String> disallowed = new HashSet<>();
-      for (String line : doc.text().split("\n")) {
-        if (line.startsWith("Disallow:")) {
-          disallowed.add(line.replace("Disallow:", "").trim());
+
+      for (String line : text.split("\n")) {
+        line = line.split("#")[0].trim();
+        if (line.toLowerCase().startsWith("user-agent:")) {
+          String agent = line.substring(11).trim();
+          relevantAgent = agent.equals("*");
+        } else if (relevantAgent && line.toLowerCase().startsWith("disallow:")) {
+          String path = line.substring(9).trim();
+          if (!path.isEmpty()) disallowed.add(path);
         }
       }
       return disallowed;
