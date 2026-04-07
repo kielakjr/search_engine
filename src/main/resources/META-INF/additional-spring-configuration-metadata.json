@@ -20,6 +20,11 @@
     "description": "Maximum number of pages to crawl"
   },
   {
+    "name": "app.crawler.request-delay-ms",
+    "type": "java.lang.Long",
+    "description": "Delay between HTTP requests during crawling in milliseconds"
+  },
+  {
     "name": "app.crawler.crawl-interval-ms",
     "type": "java.lang.Long",
     "description": "Interval between crawl attempts in milliseconds"

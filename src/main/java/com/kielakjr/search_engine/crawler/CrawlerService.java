@@ -78,6 +78,15 @@ public class CrawlerService {
       if (depth > crawlerProperties.getMaxDepth()) continue;
       if (pagesFound >= crawlerProperties.getMaxPages()) break;
 
+      if (pagesFound > 0 && crawlerProperties.getRequestDelayMs() > 0) {
+        try {
+          Thread.sleep(crawlerProperties.getRequestDelayMs());
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        }
+      }
+
       try {
         Document doc = jsoupFetcher.fetch(url);
         String title = doc.title();

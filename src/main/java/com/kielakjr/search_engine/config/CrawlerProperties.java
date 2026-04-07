@@ -12,4 +12,5 @@ import lombok.Data;
 public class CrawlerProperties {
   private int maxDepth;
   private int maxPages;
+  private long requestDelayMs;
 }
