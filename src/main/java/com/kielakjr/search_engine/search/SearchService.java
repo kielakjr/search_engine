@@ -5,6 +5,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
@@ -83,6 +84,25 @@ public class SearchService {
           .snippet(snippet)
           .build();
       })
+      .collect(Collectors.toList());
+  }
+
+  public List<String> suggest(String prefix) {
+    Query query = NativeQuery.builder()
+      .withQuery(q -> q
+          .matchPhrasePrefix(m -> m
+            .field("title")
+            .query(prefix)
+          )
+      )
+      .withPageable(PageRequest.of(0, 5))
+      .build();
+
+    return elasticsearchOperations.search(query, PageDocument.class)
+      .getSearchHits()
+      .stream()
+      .map(hit -> hit.getContent().getTitle())
+      .distinct()
       .collect(Collectors.toList());
   }
 }

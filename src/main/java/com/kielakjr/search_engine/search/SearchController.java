@@ -38,4 +38,9 @@ public class SearchController {
   public ResponseEntity<List<SearchHistoryResponse>> getSearchHistory(@PathVariable Long userId) {
     return ResponseEntity.ok(searchHistoryService.getSearchHistoryForUser(userId));
   }
+
+  @GetMapping("/suggest")
+  public ResponseEntity<List<String>> suggest(@RequestParam @NotBlank String prefix) {
+    return ResponseEntity.ok(searchService.suggest(prefix));
+  }
 }
