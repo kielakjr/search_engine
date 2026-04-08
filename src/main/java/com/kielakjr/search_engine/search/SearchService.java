@@ -28,13 +28,22 @@ public class SearchService {
     Query searchQuery = NativeQuery.builder()
       .withQuery(q -> q
         .bool(b -> {
-          b.must(must -> must
+          b.should(exact -> exact
+            .multiMatch(m -> m
+              .query(query)
+              .fields("title^3", "content")
+              .fuzziness("0")
+              .boost(2.0f)
+            )
+          );
+          b.should(fuzzy -> fuzzy
             .multiMatch(m -> m
               .query(query)
               .fields("title^3", "content")
               .fuzziness("1")
             )
           );
+          b.minimumShouldMatch("1");
           if (domain != null && !domain.isEmpty()) {
             b.filter(f -> f
               .term(t -> t
