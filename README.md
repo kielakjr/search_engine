@@ -25,11 +25,11 @@ Built as a portfolio project to demonstrate backend architecture, distributed sy
                       |  Spring Boot    |
                       |  REST API       |
                       |  + JWT Auth     |
-                      +--+-----------+--+
-                         |           |
-              +----------+       +---+----------+
-              |                  |              |
-      +-------v---+     +-------v---+   +------v------+
+                      +--+----------+---+
+                         |          |
+              +----------+      +---+----------+
+              |                 |              |
+      +-------v---+      +------v----+   +-----v-------+
       | PostgreSQL |     |Elasticsea-|   |    Redis    |
       |            |     |   rch     |   |             |
       | Users      |     | Full-text |   |    URL      |
