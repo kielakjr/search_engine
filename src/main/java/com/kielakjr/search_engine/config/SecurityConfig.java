@@ -30,6 +30,7 @@ public class SecurityConfig {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
+          .requestMatchers("/api/health").permitAll()
           .requestMatchers("/api/auth/**").permitAll()
           .requestMatchers(HttpMethod.POST, "/api/sources").hasRole("ADMIN")
           .requestMatchers(HttpMethod.DELETE, "/api/sources/**").hasRole("ADMIN")
