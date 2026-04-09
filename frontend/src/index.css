@@ -173,6 +173,41 @@ button.danger:hover {
   font-weight: 600;
 }
 
+/* Suggestions dropdown */
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.search-input-wrapper input {
+  width: 100%;
+}
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  list-style: none;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 10;
+}
+.suggestions li {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #e1e4e8;
+}
+.suggestions li:hover,
+.suggestions li.active {
+  background: #21262d;
+  color: #58a6ff;
+}
+
 .no-results {
   color: #8b949e;
   margin-top: 1.5rem;

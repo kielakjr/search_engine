@@ -92,6 +92,11 @@ export async function startCrawl(sourceId: number): Promise<string> {
   return request<string>(`/crawler/start/${sourceId}`, { method: "POST" });
 }
 
+export async function suggest(prefix: string): Promise<string[]> {
+  const params = new URLSearchParams({ prefix });
+  return request<string[]>(`/../search/suggest?${params}`);
+}
+
 export async function getCrawlJobs(): Promise<CrawlJobResponse[]> {
   return request<CrawlJobResponse[]>("/crawler/jobs");
 }
