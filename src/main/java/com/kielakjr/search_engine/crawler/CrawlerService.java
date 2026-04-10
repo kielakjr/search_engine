@@ -97,8 +97,8 @@ public class CrawlerService {
         if (body.isEmpty()) {
           body = doc.body().text();
         }
-        if (body.length() > 5000) {
-          body = body.substring(0, 5000);
+        if (body.length() > 500) {
+          body = body.substring(0, 500);
         }
         pagesFound++;
         PageDocument pageDoc = PageDocument.builder()

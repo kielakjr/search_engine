@@ -38,7 +38,12 @@ export default function LoginPage({ onSuccess }: Props) {
 
   return (
     <div className="page login-page">
-      <h1>{isRegister ? "Register" : "Login"}</h1>
+      <h1>{isRegister ? "Create account" : "Welcome back"}</h1>
+      <p className="subtitle">
+        {isRegister
+          ? "Sign up to save your search history."
+          : "Sign in to continue to Lumen."}
+      </p>
       <form onSubmit={handleSubmit} className="auth-form">
         <input
           type="email"

@@ -14,14 +14,15 @@ export default function HistoryPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="loading">Loading history...</p>;
   if (error) return <p className="error">{error}</p>;
 
   return (
     <div className="page">
-      <h1>Search History</h1>
+      <h1>Search history</h1>
+      <p className="subtitle">A log of your recent queries.</p>
       {history.length === 0 ? (
-        <p>No search history yet.</p>
+        <p className="empty">No search history yet.</p>
       ) : (
         <table className="data-table">
           <thead>

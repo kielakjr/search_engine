@@ -96,7 +96,12 @@ export default function SearchPage() {
 
   return (
     <div className="page search-page">
-      <h1>Search</h1>
+      <div className="search-hero">
+        <h1>Search the web</h1>
+        <p className="subtitle">
+          Fast, minimal, and focused on the results that matter.
+        </p>
+      </div>
       <form
         className="search-form"
         onSubmit={(e) => {

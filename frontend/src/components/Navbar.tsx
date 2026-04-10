@@ -10,6 +10,14 @@ export default function Navbar({ page, setPage }: Props) {
 
   return (
     <nav className="navbar">
+      <div
+        className="brand"
+        onClick={() => setPage("search")}
+        style={{ cursor: "pointer" }}
+      >
+        <span className="brand-dot" />
+        <span>Search Engine</span>
+      </div>
       <button
         className={page === "search" ? "active" : ""}
         onClick={() => setPage("search")}

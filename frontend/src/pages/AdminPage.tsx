@@ -62,16 +62,17 @@ export default function AdminPage() {
     }
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="loading">Loading admin data...</p>;
 
   return (
     <div className="page admin-page">
       <h1>Admin</h1>
+      <p className="subtitle">Manage sources and monitor crawl jobs.</p>
       {error && <p className="error">{error}</p>}
 
       <section>
-        <h2>Add Source</h2>
-        <form className="source-form" onSubmit={handleAddSource}>
+        <h2>Add source</h2>
+        <form className="source-form card" onSubmit={handleAddSource}>
           <input
             type="text"
             placeholder="Name"
@@ -93,7 +94,7 @@ export default function AdminPage() {
       <section>
         <h2>Sources</h2>
         {sources.length === 0 ? (
-          <p>No sources yet.</p>
+          <p className="empty">No sources yet.</p>
         ) : (
           <table className="data-table">
             <thead>
@@ -127,9 +128,9 @@ export default function AdminPage() {
       </section>
 
       <section>
-        <h2>Crawl Jobs</h2>
+        <h2>Crawl jobs</h2>
         {jobs.length === 0 ? (
-          <p>No crawl jobs yet.</p>
+          <p className="empty">No crawl jobs yet.</p>
         ) : (
           <table className="data-table">
             <thead>
