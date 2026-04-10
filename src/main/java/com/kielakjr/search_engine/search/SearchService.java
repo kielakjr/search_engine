@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.query.highlight.HighlightFiel
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 import com.kielakjr.search_engine.auth.User;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class SearchService {
   private final ElasticsearchOperations elasticsearchOperations;
   private final SearchHistoryRepository searchHistoryRepository;
 
+  @Cacheable(value = "searchResults", key = "#query + '-' + #page + '-' + #size + '-' + (#domain != null ? #domain : 'all')")
   public List<SearchResponse> search(String query, int page, int size, String domain) {
     Query searchQuery = NativeQuery.builder()
       .withQuery(q -> q
@@ -86,6 +88,7 @@ public class SearchService {
       .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "searchSuggestions", key = "#prefix")
   public List<String> suggest(String prefix) {
     Query query = NativeQuery.builder()
       .withQuery(q -> q
